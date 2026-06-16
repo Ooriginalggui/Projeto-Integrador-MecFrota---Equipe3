@@ -1,0 +1,64 @@
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "categorias" (
+	"categoria_id"	INTEGER,
+	"categoria_nome"	VARCHAR(100),
+	PRIMARY KEY("categoria_id" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "ordens_servicos" (
+	"ordem_id"	INTEGER,
+	"data_ordem"	VARCHAR(100),
+	"veiculo_id"	INTEGER,
+	"motivo"	VARCHAR(100),
+	"tipo_id"	INTEGER,
+	PRIMARY KEY("ordem_id" AUTOINCREMENT),
+	FOREIGN KEY("tipo_id") REFERENCES "tipos_ordens"("tipo_id"),
+	FOREIGN KEY("veiculo_id") REFERENCES "veiculos"("veiculo_id")
+);
+CREATE TABLE IF NOT EXISTS "tipos_ordens" (
+	"tipo_id"	INTEGER,
+	"tipo_nome"	VARCHAR(100),
+	PRIMARY KEY("tipo_id" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "usuarios" (
+	"usuario_id"	INTEGER,
+	"usuario_nome"	VARCHAR(100),
+	PRIMARY KEY("usuario_id" AUTOINCREMENT)
+);
+CREATE TABLE IF NOT EXISTS "veiculos" (
+	"veiculo_id"	INTEGER,
+	"placa"	VARCHAR(100),
+	"modelo"	VARCHAR(100),
+	"ano"	VARCHAR(100),
+	"categoria_id"	INTEGER,
+	"data_ultima_ordem"	VARCHAR(100),
+	"data_proxima_ordem"	VARCHAR(100),
+	PRIMARY KEY("veiculo_id" AUTOINCREMENT),
+	FOREIGN KEY("categoria_id") REFERENCES "categorias"("categoria_id")
+);
+INSERT INTO "categorias" VALUES (1,'Carro');
+INSERT INTO "categorias" VALUES (2,'Caminhão');
+INSERT INTO "categorias" VALUES (3,'Patinete');
+INSERT INTO "categorias" VALUES (4,'Van');
+INSERT INTO "ordens_servicos" VALUES (1,'2026-01-10',1,'Troca de óleo e filtros',2);
+INSERT INTO "ordens_servicos" VALUES (2,'2026-02-15',2,'Substituição de pastilhas de freio',1);
+INSERT INTO "ordens_servicos" VALUES (3,'2026-03-05',3,'Revisão geral do motor',2);
+INSERT INTO "ordens_servicos" VALUES (4,'2026-04-01',4,'Troca de bateria',1);
+INSERT INTO "ordens_servicos" VALUES (5,'2026-01-22',5,'Alinhamento e balanceamento',2);
+INSERT INTO "ordens_servicos" VALUES (6,'2026-02-28',6,'Correção de vazamento de óleo',1);
+INSERT INTO "ordens_servicos" VALUES (7,'2026-03-18',7,'Inspeção preventiva dos pneus',2);
+INSERT INTO "ordens_servicos" VALUES (8,'2026-04-12',8,'Reparo no sistema elétrico',1);
+INSERT INTO "ordens_servicos" VALUES (9,'2026-05-02',9,'Troca de correia dentada',2);
+INSERT INTO "ordens_servicos" VALUES (10,'2026-01-30',10,'Conserto do sistema de ar-condicionado',1);
+INSERT INTO "tipos_ordens" VALUES (1,'Corretiva');
+INSERT INTO "tipos_ordens" VALUES (2,'Preventiva');
+INSERT INTO "veiculos" VALUES (1,'ABC1D23','Fiat Uno','2018',1,'2026-01-10','2026-07-10');
+INSERT INTO "veiculos" VALUES (2,'XYZ9K87','Volkswagen Gol','2020',1,'2026-02-15','2026-08-15');
+INSERT INTO "veiculos" VALUES (3,'TRK4M55','Mercedes Actros','2022',2,'2026-03-05','2026-09-05');
+INSERT INTO "veiculos" VALUES (4,'PAT7L21','Xiaomi Scooter Pro','2024',3,'2026-04-01','2026-10-01');
+INSERT INTO "veiculos" VALUES (5,'VAN2P90','Renault Master','2021',4,'2026-01-22','2026-07-22');
+INSERT INTO "veiculos" VALUES (6,'CAR8F44','Chevrolet Onix','2019',1,'2026-02-28','2026-08-28');
+INSERT INTO "veiculos" VALUES (7,'TRK9R11','Volvo FH 540','2023',2,'2026-03-18','2026-09-18');
+INSERT INTO "veiculos" VALUES (8,'PAT3X66','Segway Ninebot','2025',3,'2026-04-12','2026-10-12');
+INSERT INTO "veiculos" VALUES (9,'VAN5T78','Fiat Ducato','2020',4,'2026-05-02','2026-11-02');
+INSERT INTO "veiculos" VALUES (10,'CAR6W33','Toyota Corolla','2022',1,'2026-01-30','2026-07-30');
+COMMIT;
