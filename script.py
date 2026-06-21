@@ -1,8 +1,8 @@
 tabela_ordens_servicos = """
 CREATE TABLE IF NOT EXISTS ordens_servicos (
     ordem_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    data_ultima VARCHAR(100),
-    data_proxima VARCHAR(100),
+    data_entrada DATE,
+    data_saida DATE,
     veiculo_id INTEGER,
     motivo VARCHAR(100),
     tipo_id INTEGER,
@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS veiculos (
     modelo VARCHAR(100),
     ano VARCHAR(100),
     categoria_id INTEGER,
-    status VARCHAR(20) DEFAULT 'Disponivel',
+    data_saida VARCHAR(100),
+    data_proxima VARCHAR(100),
     FOREIGN KEY (categoria_id) REFERENCES categorias(categoria_id)
 );
 """
@@ -26,7 +27,8 @@ CREATE TABLE IF NOT EXISTS veiculos (
 tabela_usuarios = """
 CREATE TABLE IF NOT EXISTS usuarios (
     usuario_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    usuario_nome VARCHAR(100)
+    usuario_nome VARCHAR(100),
+    senha VARCHAR(20)
 );
 """
 

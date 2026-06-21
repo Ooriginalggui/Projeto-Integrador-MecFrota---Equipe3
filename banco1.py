@@ -36,14 +36,29 @@ def conectar():
     return conn
 
 
-def db_cadastrar_veiculo(placa, modelo, ano, categoria_id):
+def db_cadastrar_veiculo(modelo, ano, placa, categoria_id):
     conn = conectar()
     cursor = conn.cursor()
-    # Adicionado o campo 'status' obrigatoriamente como 'Disponivel' de acordo com a nova tabela
+
     cursor.execute("""
-        INSERT INTO veiculos (placa, modelo, ano, categoria_id)
-        VALUES (?, ?, ?, ?)
-    """, (placa, modelo, ano, categoria_id))
+        INSERT INTO veiculos (
+            modelo,
+            ano,
+            placa,
+            categoria_id,
+            data_saida,
+            data_proxima
+        )
+        VALUES (
+            ?,
+            ?,
+            ?,
+            ?,
+            date('now'),
+            date('now', '+6 months')
+        )
+    """, (modelo, ano, placa, categoria_id))
+
     conn.commit()
     conn.close()
 
@@ -54,10 +69,12 @@ def db_listar_veiculos():
     query = """
             SELECT
                 v.veiculo_id,
-                v.placa,
                 v.modelo,
                 v.ano,
-                c.nome_categoria
+                v.placa,
+                c.nome_categoria,
+                v.data_saida,
+                v.data_proxima
             FROM veiculos v
             INNER JOIN categorias c ON v.categoria_id = c.categoria_id
             ORDER BY v.veiculo_id
@@ -67,6 +84,18 @@ def db_listar_veiculos():
     veiculos = cursor.fetchall()
     conn.close()
     return    veiculos
+
+
+def db_editar_veiculo(veiculo_id, modelo, ano, placa, categoria_id, data_saida, data_proxima):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE veiculos
+        SET modelo = ?, ano = ?, placa = ?, categoria_id = ?, data_saida = ?, data_proxima = ?
+        WHERE veiculo_id = ?
+    """, (modelo, ano, placa, categoria_id, data_saida, data_proxima, veiculo_id))
+    conn.commit()
+    conn.close()
 
 
 def db_atualizar_veiculo(id_veiculo, placa, modelo, ano, categoria_id):
@@ -87,45 +116,6 @@ def db_deletar_veiculo(id_veiculo):
     cursor.execute("DELETE FROM veiculos WHERE veiculo_id = ?", (id_veiculo,))
     conn.commit()
     conn.close()
-
-# def db_cadastrar_cliente(nome_cliente, telefone, endereco, cpf, tipo):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("""
-#         INSERT INTO cliente (nome_cliente, telefone, endereco, cpf, tipo)
-#         VALUES (?, ?, ?, ?, ?)
-#     """, (nome_cliente, telefone, endereco, cpf, tipo))
-#     conn.commit()
-#     conn.close()
-
-# def db_atualizar_cliente(id_cliente, nome, telefone, endereco, cpf, tipo):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("""
-#         UPDATE cliente
-#         SET nome_cliente = ?, telefone = ?, endereco = ?, cpf = ?, tipo = ?
-#         WHERE id_cliente = ?
-#     """, (nome, telefone, endereco, cpf, id_cliente, tipo))
-#     conn.commit()
-#     conn.close()
-
-
-# def db_listar_cliente():
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("SELECT * FROM cliente")
-#     dados = cursor.fetchall()
-#     conn.close()
-#     return dados
-
-
-# def db_deletar_cliente(id_cliente):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("DELETE FROM cliente WHERE id_cliente = ?", (id_cliente,))
-#     conn.commit()
-#     conn.close()
-
 
 def db_cadastrar_categorias(nome_categoria):
     conn = conectar()
@@ -150,7 +140,7 @@ def db_atualizar_categorias(id_categoria, nome):
     cursor.execute("""
         UPDATE categorias
         SET nome_categoria = ?
-        WHERE id_categoria = ?
+        WHERE categoria_id = ?
     """, (nome, id_categoria))
     conn.commit()
     conn.close()
@@ -159,83 +149,9 @@ def db_atualizar_categorias(id_categoria, nome):
 def db_deletar_categorias(id_categoria):
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM categorias WHERE id_categoria = ?", (id_categoria,))
+    cursor.execute("DELETE FROM categorias WHERE categoria_id = ?", (id_categoria,))
     conn.commit()
     conn.close()
-
-
-# def db_cadastrar_categoria(nome_cat):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("INSERT INTO categoria (nome_categoria) VALUES (?)", (nome_cat,))
-#     conn.commit()
-#     conn.close()
-
-
-# def db_listar_categoria():
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("SELECT * FROM categoria")
-#     dados = cursor.fetchall()
-#     conn.close()
-#     return dados
-
-
-# def db_atualizar_categoria(id_categoria, nome):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("""
-#         UPDATE categoria
-#         SET nome_categoria = ?
-#         WHERE id_categoria = ?
-#     """, (nome, id_categoria))
-#     conn.commit()
-#     conn.close()
-
-
-# def db_deletar_categoria(id_categoria):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("DELETE FROM categoria WHERE id_categoria = ?", (id_categoria,))
-#     conn.commit()
-#     conn.close()
-
-
-# def db_cadastrar_autor(nome_autor):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("INSERT INTO autor (nome_autor) VALUES (?)", (nome_autor,))
-#     conn.commit()
-#     conn.close()
-   
-# def db_atualizar_autor(id_autor, nome):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("""
-#         UPDATE autor
-#         SET nome_autor = ?
-#         WHERE id_autor = ?
-#     """, (nome, id_autor))
-#     conn.commit()
-#     conn.close()
-
-
-# def db_listar_autor():
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("SELECT * FROM autor")
-#     dados = cursor.fetchall()
-#     conn.close()
-#     return dados
-
-
-# def db_deletar_autor(id_autor):
-#     conn = conectar()
-#     cursor = conn.cursor()
-#     cursor.execute("DELETE FROM autor WHERE id_autor = ?", (id_autor,))
-#     conn.commit()
-#     conn.close()
-
 
 def db_cadastrar_manutencao(veiculo_id, motivo, tipo_id):
     conn = conectar()
