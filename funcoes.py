@@ -24,8 +24,63 @@ def conectar():
     cursor.execute(script.tabela_veiculos)
     cursor.execute(script.tabela_categorias)
     cursor.execute(script.tabela_tipos_ordens)
+    cursor.execute(script.tabela_modelos)
     conn.commit()
     return conn
+
+def buscar_modelos():
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT modelo_id, nome_modelo, categoria_id FROM modelos")
+    dados = cursor.fetchall()
+    conn.close()
+    return dados
+ 
+lista_modelos = buscar_modelos()
+ 
+nomes_modelos = [modelo[1] for modelo in lista_modelos]
+categorias_modelos = {modelo[1]: modelo[2] for modelo in lista_modelos}
+ 
+
+def db_cadastrar_modelo(nome_modelo, categoria_id):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO modelos (nome_modelo, categoria_id) VALUES (?, ?)", (nome_modelo, categoria_id))
+    conn.commit()
+    conn.close()
+
+def db_listar_modelos():
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""
+                    SELECT
+                        m.modelo_id,
+                        m.nome_modelo,
+                        c.nome_categoria
+                    FROM modelos m
+                    JOIN categorias c
+                        ON m.categoria_id = c.categoria_id
+                    """)
+    dados = cursor.fetchall()
+    conn.close()
+    return dados
+
+def db_editar_modelos(nome_modelo, categoria_id, modelo_id):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("""UPDATE modelos SET
+                   nome_modelo = ?,
+                   categoria_id = ?,
+                   WHERE modelo_id = ?""", (nome_modelo, categoria_id, modelo_id))
+    conn.commit()
+    conn.close()
+
+def db_deletar_modelo(modelo_id):
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM modelos WHERE modelo_id = ?", (modelo_id,))
+    conn.commit()
+    conn.close()
 
 
 def db_cadastrar_veiculo(modelo, ano, placa, categoria_id):

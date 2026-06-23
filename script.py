@@ -45,3 +45,11 @@ CREATE TABLE IF NOT EXISTS categorias (
     nome_categoria VARCHAR(100)
 );
 """
+tabela_modelos = """
+CREATE TABLE IF NOT EXISTS modelos (
+    modelo_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_modelo VARCHAR(100),
+    categoria_id INTEGER,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(categoria_id)
+);
+"""
